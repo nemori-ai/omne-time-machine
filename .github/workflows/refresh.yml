@@ -1,8 +1,11 @@
 name: Refresh
 
 on:
+  # GitHub runs scheduled workflows late or skips them, so this is only a fallback.
+  # Minute 4 of each ten avoids the busy top of the hour. The main trigger is the
+  # source-updated event that the source repository sends on each push.
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "4-59/10 * * * *"
   workflow_dispatch:
   repository_dispatch:
     types: [source-updated]

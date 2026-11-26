@@ -6,7 +6,7 @@ Site: <https://nemori-ai.github.io/omne-time-machine/>
 
 ## How it updates
 
-The workflow [`refresh.yml`](.github/workflows/refresh.yml) runs every 10 minutes:
+The workflow [`refresh.yml`](.github/workflows/refresh.yml) rebuilds the site:
 
 1. Restore the mirror clone of the source repo from cache, then do an incremental `git fetch`.
 2. `scripts/extract.py` reads every commit reachable from a branch or `refs/pull/*` and writes `data.json`.
@@ -15,7 +15,11 @@ The workflow [`refresh.yml`](.github/workflows/refresh.yml) runs every 10 minute
 
 An open page reads `version.json` once a minute. If the viewer is at "now", the page loads the new data right away. If the viewer is in the middle of a replay, a load button appears at the top of the page.
 
-GitHub does not guarantee when scheduled workflows run. A run often starts a few minutes late.
+### What starts a rebuild
+
+- A `source-updated` event from the source repository, sent on each push to any branch. This keeps the site current. See [Update right after a push](#update-right-after-a-push).
+- A schedule every 10 minutes. This is only a fallback. GitHub runs scheduled workflows late or skips them: in this organization, an hourly schedule in the source repository ran once every 4 to 15 hours in November 2026.
+- A push to `main` in this repository, or a manual run.
 
 ## Run it locally
 
@@ -34,9 +38,43 @@ Settings in `config.json`:
 - `trunks`: long-lived integration branches drawn as trunks beside `main`. A branch that does not exist is skipped.
 - `site`: URL of this site.
 
-## Update right after a push (optional)
+## Update right after a push
 
-Add a workflow to the source repository that sends a `repository_dispatch` event of type `source-updated` to this repository on every push. Sending the event needs a token with write access to this repository's contents.
+The source repository sends a `source-updated` event to this repository on each branch push. To set it up:
+
+1. Create a fine-grained personal access token. Set the resource owner to `nemori-ai`, give it access to only `omne-time-machine`, and grant **Contents: Read and write**. A `repository_dispatch` event needs that permission.
+2. Save the token as the secret `TIME_MACHINE_TOKEN` in the source repository:
+
+   ```bash
+   gh secret set TIME_MACHINE_TOKEN -R nemori-ai/omne-harness-lite
+   ```
+
+3. Add this workflow to the source repository as `.github/workflows/notify-time-machine.yml`:
+
+   ```yaml
+   name: Notify time machine
+
+   on:
+     push:
+       branches: ["**"]
+     delete:
+
+   jobs:
+     notify:
+       runs-on: ubuntu-latest
+       steps:
+         - name: Ask omne-time-machine to rebuild
+           env:
+             GH_TOKEN: ${{ secrets.TIME_MACHINE_TOKEN }}
+           run: |
+             if [ -z "$GH_TOKEN" ]; then
+               echo "TIME_MACHINE_TOKEN is not set, skipping"
+               exit 0
+             fi
+             gh api repos/nemori-ai/omne-time-machine/dispatches -f event_type=source-updated
+   ```
+
+A burst of pushes does not queue a burst of rebuilds. The refresh workflow runs one build at a time and keeps at most one waiting.
 
 ## How things are counted
 
