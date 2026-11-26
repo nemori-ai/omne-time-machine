@@ -1,0 +1,5 @@
+{
+  "repo": "https://github.com/nemori-ai/omne-harness-lite",
+  "trunks": ["integration/mainline"],
+  "site": "https://nemori-ai.github.io/omne-time-machine/"
+}

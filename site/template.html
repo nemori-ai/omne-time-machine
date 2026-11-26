@@ -1,0 +1,1304 @@
+<title>omne-harness-lite 时间机器</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* Layout: one shared clock drives every view. Hero → three findings → full-width branch river → paired views; the time machine is docked at the bottom.
+   Dark-first: night is the observatory look; day is a cool paper theme with the same hues stepped darker. Canvases read these tokens, so every view follows the switch. */
+:root {
+  color-scheme: dark;
+  --bg: #070A14;
+  --panel: #0B1020;
+  --panel-2: #111830;
+  --line: #19213A;
+  --line-2: #27314F;
+  --fg: #E7EAF3;
+  --fg-2: #A3ABC0;
+  --fg-3: #687190;
+  --main: #BA862B;
+  --main-hi: #F0C46A;
+  --on-main: #150E03;
+  --cta: #BA862B;
+  --cta-hover: #F0C46A;
+  --d1: #169BB2;
+  --d2: #8572EE;
+  --d3: #DC5890;
+  --night: rgba(92, 112, 210, 0.075);
+  --night-arc: rgba(92, 112, 210, 0.45);
+  --band: rgba(92, 112, 210, 0.35);
+  --heat-0: #0F2433;
+  --heat-1: #13809A;
+  --heat-2: #A6ECF7;
+  --ghost: rgba(255, 255, 255, 0.06);
+  --ghost-2: rgba(255, 255, 255, 0.12);
+  --cell-0: rgba(255, 255, 255, 0.045);
+  --cell-f: rgba(255, 255, 255, 0.025);
+  --glow-a: rgba(186, 134, 43, 0.10);
+  --glow-b: rgba(22, 155, 178, 0.07);
+  --dock-bg: rgba(7, 10, 20, 0.86);
+  --pill-bg: rgba(7, 10, 20, 0.8);
+  --hi-line: rgba(240, 196, 106, 0.45);
+  --flash: rgba(240, 196, 106, 0.16);
+  --cta-ring: rgba(240, 196, 106, 0.4);
+  --cta-shadow: rgba(186, 134, 43, 0.35);
+  --shadow: rgba(0, 0, 0, 0.55);
+  --glow-op: lighter;
+  --glow-k: 1;
+  --f-display: "Big Shoulders Display", "Noto Sans SC", "PingFang SC", sans-serif;
+  --f-body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #F2F4F9; --panel: #FFFFFF; --panel-2: #F5F7FB; --line: #E2E6EF; --line-2: #CBD2E0;
+    --fg: #121726; --fg-2: #4A5370; --fg-3: #6B7490;
+    --main: #A2700F; --main-hi: #A86500; --on-main: #FFFFFF; --cta: #8F6208; --cta-hover: #7A5306;
+    --d1: #008AA3; --d2: #6B55D9; --d3: #C2427C;
+    --night: rgba(70, 90, 190, 0.07); --night-arc: rgba(70, 90, 190, 0.5); --band: rgba(70, 90, 190, 0.25);
+    --heat-0: #DDEEF3; --heat-1: #2B9DB6; --heat-2: #0A4F60;
+    --ghost: rgba(18, 23, 38, 0.07); --ghost-2: rgba(18, 23, 38, 0.13); --cell-0: rgba(18, 23, 38, 0.05); --cell-f: rgba(18, 23, 38, 0.02);
+    --glow-a: rgba(186, 134, 43, 0.12); --glow-b: rgba(0, 138, 163, 0.07);
+    --dock-bg: rgba(242, 244, 249, 0.88); --pill-bg: rgba(255, 255, 255, 0.9);
+    --hi-line: rgba(168, 101, 0, 0.45); --flash: rgba(168, 101, 0, 0.12);
+    --cta-ring: rgba(143, 98, 8, 0.25); --cta-shadow: rgba(143, 98, 8, 0.22); --shadow: rgba(20, 30, 60, 0.16);
+    --glow-op: multiply; --glow-k: 0.45;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #F2F4F9; --panel: #FFFFFF; --panel-2: #F5F7FB; --line: #E2E6EF; --line-2: #CBD2E0;
+  --fg: #121726; --fg-2: #4A5370; --fg-3: #6B7490;
+  --main: #A2700F; --main-hi: #A86500; --on-main: #FFFFFF; --cta: #8F6208; --cta-hover: #7A5306;
+  --d1: #008AA3; --d2: #6B55D9; --d3: #C2427C;
+  --night: rgba(70, 90, 190, 0.07); --night-arc: rgba(70, 90, 190, 0.5); --band: rgba(70, 90, 190, 0.25);
+  --heat-0: #DDEEF3; --heat-1: #2B9DB6; --heat-2: #0A4F60;
+  --ghost: rgba(18, 23, 38, 0.07); --ghost-2: rgba(18, 23, 38, 0.13); --cell-0: rgba(18, 23, 38, 0.05); --cell-f: rgba(18, 23, 38, 0.02);
+  --glow-a: rgba(186, 134, 43, 0.12); --glow-b: rgba(0, 138, 163, 0.07);
+  --dock-bg: rgba(242, 244, 249, 0.88); --pill-bg: rgba(255, 255, 255, 0.9);
+  --hi-line: rgba(168, 101, 0, 0.45); --flash: rgba(168, 101, 0, 0.12);
+  --cta-ring: rgba(143, 98, 8, 0.25); --cta-shadow: rgba(143, 98, 8, 0.22); --shadow: rgba(20, 30, 60, 0.16);
+  --glow-op: multiply; --glow-k: 0.45;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); }
+body {
+  color: var(--fg);
+  font: 15px/1.6 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(1200px 520px at 78% -120px, var(--glow-a), transparent 70%),
+    radial-gradient(900px 600px at 0% 10%, var(--glow-b), transparent 70%),
+    var(--bg);
+}
+.page {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 44px calc(var(--dock-h, 150px) + 40px);
+}
+.num, .tab { font-variant-numeric: tabular-nums; }
+
+/* hero */
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; }
+.theme button { display: inline-flex; align-items: center; gap: 5px; }
+.theme svg { width: 13px; height: 13px; }
+.eyebrow { font: 500 12px/1.4 var(--f-mono); letter-spacing: 0.08em; color: var(--fg-2); display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.eyebrow a { color: var(--fg-2); text-decoration: none; border-bottom: 1px solid var(--line-2); }
+.eyebrow a:hover { color: var(--fg); }
+.eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--main-hi); box-shadow: 0 0 10px var(--main-hi); }
+h1 {
+  font: 800 clamp(52px, 9vw, 116px)/0.92 var(--f-display);
+  letter-spacing: -0.005em;
+  margin: 16px 0 18px;
+  text-wrap: balance;
+}
+h1 .zh { font: 700 0.42em/1 var(--f-body); color: var(--fg-2); margin: 0 0.5em 0 0.15em; letter-spacing: 0; }
+.hero-row { display: flex; flex-wrap: wrap; gap: 18px 32px; align-items: flex-end; justify-content: space-between; }
+.lede { max-width: 60ch; color: var(--fg-2); font-size: 16px; margin: 0; }
+.cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 44px; padding: 0 20px 0 16px; border-radius: 999px; border: 0;
+  background: var(--cta); color: var(--on-main);
+  font: 700 15px var(--f-body); cursor: pointer;
+  box-shadow: 0 0 0 1px var(--cta-ring), 0 8px 30px var(--cta-shadow);
+}
+.cta:hover { background: var(--cta-hover); }
+.cta svg { width: 16px; height: 16px; }
+
+/* findings */
+.findings {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  margin-top: 34px;
+}
+.finding { background: var(--panel); padding: 20px 22px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.finding .k { font: 600 12px/1.4 var(--f-mono); letter-spacing: 0.08em; color: var(--fg-2); display: flex; align-items: center; gap: 8px; }
+.finding .k svg { width: 16px; height: 16px; color: var(--main-hi); }
+.finding .big { font: 800 60px/1 var(--f-display); display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.finding .big .u { font: 500 14px/1.3 var(--f-body); color: var(--fg-2); }
+.finding p { color: var(--fg-2); font-size: 13.5px; margin: 4px 0 0; }
+.finding p b { color: var(--fg); font-weight: 500; }
+
+/* views */
+.view { margin-top: 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 16px; min-width: 0; position: relative; }
+.view-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 18px; margin-bottom: 12px; }
+.view-head > div { min-width: 0; }
+.view h2 { font: 700 18px/1.3 var(--f-body); margin: 0; text-wrap: balance; }
+.view .cap { color: var(--fg-2); font-size: 13px; margin: 3px 0 0; max-width: 70ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 12px var(--f-mono); color: var(--fg-2); align-items: center; }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.legend i.band { height: 10px; width: 12px; background: var(--band); border-radius: 2px; }
+.seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px; gap: 2px; }
+.seg button { font: 500 12px var(--f-body); color: var(--fg-2); background: transparent; border: 0; height: 26px; padding: 0 12px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 22px; margin-top: 22px; }
+.grid2.flip { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+.grid2 > .view { margin-top: 0; }
+@media (max-width: 920px) {
+  .grid2, .grid2.flip { grid-template-columns: 1fr; }
+  .findings { grid-template-columns: 1fr; }
+}
+canvas { display: block; width: 100%; }
+#river { height: clamp(300px, 52vh, 540px); cursor: crosshair; touch-action: pan-y; }
+#clock { aspect-ratio: 1 / 1; max-width: 460px; margin: 0 auto; cursor: pointer; }
+.view.fill { display: flex; flex-direction: column; }
+.view.fill > * { flex: none; }
+#vel { flex: 1 1 250px; min-height: 250px; height: 250px; cursor: pointer; }
+#stars { aspect-ratio: 1 / 1; max-width: 500px; margin: 0 auto; }
+.rewind {
+  position: absolute; left: 50%; top: 86px; transform: translateX(-50%);
+  font: 600 12px var(--f-mono); letter-spacing: 0.12em; color: var(--main-hi);
+  background: var(--pill-bg); border: 1px solid var(--hi-line); border-radius: 999px; padding: 6px 14px;
+  pointer-events: none;
+}
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
+.stats div { min-width: 0; }
+.stats dt { font: 12px/1.4 var(--f-body); color: var(--fg-3); }
+.stats dd { margin: 2px 0 0; font: 700 26px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
+.stats dd small { font: 500 12px var(--f-body); color: var(--fg-2); margin-left: 4px; }
+@media (max-width: 520px) { .stats dd { font-size: 22px; } }
+.hot { margin-top: 12px; font-size: 13px; color: var(--fg-2); display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; min-height: 28px; }
+.hot span.chip { font: 12px var(--f-mono); color: var(--fg); border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 10px; }
+details.table { margin-top: 12px; font-size: 13px; color: var(--fg-2); }
+details.table summary { cursor: pointer; color: var(--fg-2); }
+details.table .scroll { overflow-x: auto; max-height: 280px; margin-top: 8px; border: 1px solid var(--line); border-radius: 8px; }
+details.table table { border-collapse: collapse; width: 100%; font: 12px var(--f-mono); font-variant-numeric: tabular-nums; }
+details.table th, details.table td { padding: 5px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+details.table th:first-child, details.table td:first-child { text-align: left; }
+details.table th { position: sticky; top: 0; background: var(--panel-2); color: var(--fg-2); font-weight: 600; }
+
+/* ticker */
+.ticker { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.ticker li { display: grid; grid-template-columns: 82px minmax(0, 170px) minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 6px 8px; border-radius: 6px; min-height: 32px; }
+.ticker .tm { font: 12px var(--f-mono); color: var(--fg-3); }
+.ticker .br { font: 11.5px var(--f-mono); color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ticker .br i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+.ticker .sj { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--fg); }
+.ticker li.new { animation: flash 1.1s ease-out; }
+@keyframes flash { from { background: var(--flash); } to { background: transparent; } }
+@media (max-width: 600px) { .ticker li { grid-template-columns: 70px minmax(0, 1fr); } .ticker .br { display: none; } }
+
+.team { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.team-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+.team-head #team-line { font: 600 14.5px var(--f-body); color: var(--fg); }
+.team-head .note { color: var(--fg-3); font: 11.5px var(--f-mono); }
+.team-row { display: grid; grid-template-columns: 128px minmax(0, 1fr) 52px; gap: 14px; align-items: center; font: 500 13.5px var(--f-body); color: var(--fg-2); }
+.team-row .bar { height: 10px; border-radius: 3px; overflow: hidden; background: linear-gradient(90deg, var(--line-2) 1px, transparent 1px) 0 0 / var(--seg, 33.333%) 100% repeat-x, var(--ghost); }
+.team-row .bar i { display: block; height: 100%; background: var(--fg-3); border-radius: 3px; }
+.team-row > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 420px) { .team-row { grid-template-columns: 100px minmax(0, 1fr) 48px; gap: 10px; } }
+.team-row .lg { font: 500 12.5px var(--f-mono); color: var(--fg-2); text-align: right; font-variant-numeric: tabular-nums; }
+.team-axis .ax { position: relative; height: 14px; font: 10.5px/14px var(--f-mono); color: var(--fg-3); }
+.team-axis .ax b { position: absolute; top: 0; font-weight: 400; white-space: nowrap; transform: translateX(-50%); }
+.team-axis .ax b:first-child { transform: none; }
+.team-axis .ax b:last-child { transform: translateX(-100%); }
+
+footer.notes { margin-top: 34px; color: var(--fg-3); font-size: 12.5px; max-width: 90ch; display: grid; gap: 6px; }
+footer.notes b { color: var(--fg-2); font-weight: 500; }
+
+/* time machine dock */
+.dock {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--dock-bg);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line-2);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: 10px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+}
+.dock-in { max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 8px 26px; align-items: center; }
+.m-clock { display: grid; grid-template-columns: auto auto; column-gap: 10px; align-items: baseline; }
+.m-date { font: 600 13px var(--f-mono); color: var(--fg-2); grid-column: 1 / -1; letter-spacing: 0.04em; }
+.m-time { font: 800 38px/1 var(--f-display); font-variant-numeric: tabular-nums; color: var(--fg); min-width: 2.6em; }
+.m-tz { font: 12px var(--f-body); color: var(--fg-3); }
+.m-ctrls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.btn {
+  height: 36px; min-width: 36px; padding: 0 9px; border-radius: 9px; border: 1px solid var(--line-2);
+  background: var(--panel-2); color: var(--fg); display: inline-grid; place-items: center; cursor: pointer;
+}
+.btn svg { width: 16px; height: 16px; }
+.btn:hover { border-color: var(--fg-3); }
+.btn.primary { background: var(--cta); color: var(--on-main); border-color: transparent; min-width: 46px; }
+.btn.primary:hover { background: var(--cta-hover); }
+.btn[aria-pressed="true"] { border-color: var(--main-hi); color: var(--main-hi); }
+.speeds { display: inline-flex; gap: 2px; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px; margin-left: 4px; }
+.speeds button { font: 500 11.5px var(--f-mono); color: var(--fg-2); background: transparent; border: 0; height: 28px; padding: 0 9px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.speeds button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.spd-cycle { display: none; }
+.m-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0; justify-self: end; min-width: 0; width: 100%; max-width: 520px; }
+.m-stats div { min-width: 0; text-align: right; }
+.m-stats dt { font: 11.5px var(--f-body); color: var(--fg-3); white-space: nowrap; }
+.m-stats dd { margin: 0; font: 700 24px/1.15 var(--f-display); font-variant-numeric: tabular-nums; }
+.scrub-row { grid-column: 1 / -1; position: relative; }
+#scrub { height: 46px; cursor: ew-resize; touch-action: none; }
+:focus-visible { outline: 2px solid var(--main-hi); outline-offset: 2px; }
+@media (max-width: 1060px) {
+  .dock-in { grid-template-columns: auto minmax(0, 1fr); }
+  .m-stats { grid-column: 1 / -1; justify-self: stretch; max-width: none; }
+  .m-stats div { text-align: left; }
+}
+@media (max-width: 640px) {
+  .m-time { font-size: 30px; }
+  .m-tz, #b-start, .speeds { display: none; }
+  .m-ctrls { justify-content: flex-end; }
+  .spd-cycle { display: inline-grid; font: 500 12px var(--f-mono); padding: 0 10px; }
+  #scrub { height: 38px; }
+  .m-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .m-stats dd { font-size: 19px; }
+  .m-stats dt { font-size: 10.5px; }
+  #b-end { display: none; }
+}
+
+.fresh {
+  position: fixed; z-index: 30; left: 50%; top: calc(12px + env(safe-area-inset-top, 0px)); transform: translateX(-50%);
+  height: 36px; padding: 0 16px; border: 0; border-radius: 999px; cursor: pointer; white-space: nowrap;
+  background: var(--cta); color: var(--on-main); font: 600 13px var(--f-body);
+  box-shadow: 0 0 0 1px var(--cta-ring), 0 8px 24px var(--cta-shadow);
+}
+.fresh:hover { background: var(--cta-hover); }
+.tip {
+  position: fixed; z-index: 40; pointer-events: none;
+  background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 9px;
+  padding: 8px 11px; font-size: 12.5px; line-height: 1.5; max-width: min(340px, calc(100vw - 24px));
+  box-shadow: 0 10px 34px var(--shadow); color: var(--fg);
+}
+.tip .t { font: 11.5px var(--f-mono); color: var(--fg-3); }
+.tip .s { color: var(--fg-2); }
+.tip b { font-weight: 600; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .ticker li.new { animation: none; } }
+</style>
+<script>try { var s = localStorage.getItem('omne-tm-theme'); if (s === 'light' || s === 'dark') document.documentElement.setAttribute('data-theme', s); } catch (e) {}</script>
+
+<div class="page">
+  <header>
+    <div class="top">
+      <div class="eyebrow"><span class="dot" aria-hidden="true"></span><a href="https://github.com/nemori-ai/omne-harness-lite" target="_blank" rel="noopener">nemori-ai / omne-harness-lite</a><span>全分支提交回放</span><span id="snap"></span></div>
+      <div class="seg theme" role="group" aria-label="配色">
+        <button type="button" id="th-day" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><path d="M8 1.2v1.8M8 13v1.8M1.2 8H3M13 8h1.8M3.2 3.2l1.3 1.3M11.5 11.5l1.3 1.3M3.2 12.8l1.3-1.3M11.5 4.5l1.3-1.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>日间</button>
+        <button type="button" id="th-night" aria-pressed="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.6 10.2A6 6 0 0 1 5.8 2.4a6 6 0 1 0 7.8 7.8z" fill="currentColor"/></svg>夜间</button>
+      </div>
+    </div>
+    <h1><span class="num" id="h-days">76</span><span class="zh">天</span><span class="num" id="h-commits">13,912</span><span class="zh">次提交</span></h1>
+    <div class="hero-row">
+      <p class="lede" id="lede">从第一笔提交到今天清晨，所有分支和 PR 里的每一次提交都在这里。按下播放，或者拖动底部时间轴，回到任意一个时刻。</p>
+      <button class="cta" id="cta" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>从头回放</button>
+    </div>
+  </header>
+
+  <section class="findings" aria-label="三个结论">
+    <div class="finding">
+      <div class="k"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9 1 3 9h4l-1 6 6-8H8z" fill="currentColor"/></svg>迭代速度</div>
+      <div class="big"><span class="num" id="f-rate">144</span><span class="u">次提交 / 天</span></div>
+      <p id="f-rate-p"></p>
+    </div>
+    <div class="finding">
+      <div class="k"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 4.2V8l2.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>全天候</div>
+      <div class="big"><span class="num" id="f-hours">24/24</span><span class="u">个整点都有提交</span></div>
+      <p id="f-hours-p"></p>
+    </div>
+    <div class="finding">
+      <div class="k"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>多线并行</div>
+      <div class="big"><span class="num" id="f-par">30</span><span class="u">条分支线同时开着（峰值）</span></div>
+      <p id="f-par-p"></p>
+    </div>
+  </section>
+
+  <section class="view" aria-labelledby="river-h">
+    <div class="view-head">
+      <div>
+        <h2 id="river-h">分支河流</h2>
+        <p class="cap">横轴是时间，每条线是一条分支：从母线分出，做完再汇回去。金线是主干：中间是 main，紧贴其下的是集成主线 integration/mainline。颜色越偏粉，分支嵌套越深。浅色竖带是凌晨 0–6 点。</p>
+      </div>
+      <div class="seg" role="group" aria-label="镜头">
+        <button type="button" id="cam-follow" aria-pressed="true">跟随镜头</button>
+        <button type="button" id="cam-full" aria-pressed="false">全景</button>
+      </div>
+    </div>
+    <div class="legend" style="margin-bottom:10px">
+      <span><i style="background:var(--main)"></i>主干</span>
+      <span><i style="background:var(--d1)"></i>直接合入主干</span>
+      <span><i style="background:var(--d2)"></i>二级分支</span>
+      <span><i style="background:var(--d3)"></i>三级及更深</span>
+      <span><i class="band"></i>凌晨 0–6 点</span>
+    </div>
+    <canvas id="river" role="img" aria-label="分支河流：随时间展开的分支与合并"></canvas>
+    <div class="rewind" id="rewind" hidden>时间回溯中</div>
+  </section>
+
+  <div class="grid2">
+    <section class="view" aria-labelledby="clock-h">
+      <div class="view-head">
+        <div>
+          <h2 id="clock-h">24 小时钟</h2>
+          <p class="cap" id="clock-cap">一圈是一天的 24 个小时，由内到外是每一天。格子越亮，那个小时提交越多；金色指针是当前时刻。</p>
+        </div>
+      </div>
+      <canvas id="clock" role="img" aria-label="按日期和小时排列的提交热力钟"></canvas>
+      <dl class="stats">
+        <div><dt>凌晨 0–6 点提交</dt><dd id="s-night">0</dd></div>
+        <div><dt>最冷清的整点</dt><dd id="s-quiet">—</dd></div>
+        <div><dt>≥ 20 个整点有提交</dt><dd id="s-full">0<small>天</small></dd></div>
+      </dl>
+    </section>
+
+    <section class="view fill" aria-labelledby="vel-h">
+      <div class="view-head">
+        <div>
+          <h2 id="vel-h">每日提交</h2>
+          <p class="cap">金色是已经走过的日子，灰色是还没到的未来。点一根柱子，直接跳到那一天结束时。</p>
+        </div>
+      </div>
+      <canvas id="vel" role="img" aria-label="每日提交数柱状图"></canvas>
+      <dl class="stats">
+        <div><dt>平均提交间隔</dt><dd id="s-gap">—</dd></div>
+        <div><dt>单日峰值（截至此刻）</dt><dd id="s-peak">0</dd></div>
+        <div><dt>合并中位用时</dt><dd id="s-merge">—</dd></div>
+      </dl>
+      <details class="table">
+        <summary>查看每日数据表</summary>
+        <div class="scroll"><table id="day-table"><thead><tr><th>日期</th><th>提交</th><th>有提交的整点</th><th>有提交的分支线</th></tr></thead><tbody></tbody></table></div>
+      </details>
+    </section>
+  </div>
+
+  <div class="grid2 flip">
+    <section class="view" aria-labelledby="stars-h">
+      <div class="view-head">
+        <div>
+          <h2 id="stars-h">代码星图</h2>
+          <p class="cap" id="stars-cap">按目录聚合的模块，同一顶层目录聚成一团。每次提交，光束从中心射向被改动的模块；越亮代表累计改动越多。</p>
+        </div>
+      </div>
+      <canvas id="stars" role="img" aria-label="代码模块星图"></canvas>
+      <div class="hot" id="hot"><span>近 24 小时最热：</span></div>
+    </section>
+
+    <section class="view" aria-labelledby="tick-h">
+      <div class="view-head">
+        <div>
+          <h2 id="tick-h">提交流</h2>
+          <p class="cap">当前时刻之前的最后几次提交，随时间回放滚动。</p>
+        </div>
+      </div>
+      <ol class="ticker" id="ticker" aria-live="off"></ol>
+      <div class="team">
+        <div class="team-head"><span id="team-line">提交作者</span><span class="note">条长 = log₁₀(提交数)，数字是实际提交数</span></div>
+        <div id="team-rows"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="notes" id="notes"></footer>
+</div>
+
+<div class="dock" id="dock" role="region" aria-label="时间机器">
+  <div class="dock-in">
+    <div class="m-clock" aria-live="off">
+      <div class="m-date" id="m-date">2026-11-03</div>
+      <div class="m-time" id="m-time">08:36</div>
+      <div class="m-tz" id="m-tz">北京时间</div>
+    </div>
+    <div class="m-ctrls">
+      <button class="btn" id="b-start" type="button" title="回到起点（Home）" aria-label="回到起点"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5v11M13 2.5v11l-8-5.5z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      <button class="btn" id="b-rev" type="button" title="倒放" aria-label="倒放" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10L1.5 8zM15 3v10L8.5 8z" fill="currentColor"/></svg></button>
+      <button class="btn primary" id="b-play" type="button" title="播放 / 暂停（空格）" aria-label="播放"><svg viewBox="0 0 16 16" aria-hidden="true" id="i-play"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg></button>
+      <button class="btn" id="b-end" type="button" title="跳到现在（End）" aria-label="跳到现在"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 2.5v11M3 2.5v11l8-5.5z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      <div class="speeds" role="group" aria-label="回放速度">
+        <button type="button" data-speed="7200" aria-pressed="false">2时/秒</button>
+        <button type="button" data-speed="43200" aria-pressed="true">半天/秒</button>
+        <button type="button" data-speed="86400" aria-pressed="false">1天/秒</button>
+        <button type="button" data-speed="259200" aria-pressed="false">3天/秒</button>
+      </div>
+      <button class="btn spd-cycle" id="b-speed" type="button" aria-label="切换回放速度">半天/秒</button>
+    </div>
+    <dl class="m-stats">
+      <div><dt>已提交</dt><dd id="d-commits">0</dd></div>
+      <div><dt>此刻并行分支</dt><dd id="d-par">0</dd></div>
+      <div><dt>近 24 小时提交</dt><dd id="d-24">0</dd></div>
+      <div><dt>已合并 PR</dt><dd id="d-pr">0</dd></div>
+    </dl>
+    <div class="scrub-row">
+      <canvas id="scrub" role="slider" tabindex="0" aria-label="时间轴" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"></canvas>
+    </div>
+  </div>
+</div>
+<div class="tip" id="tip" hidden></div>
+<button class="fresh" id="fresh" type="button" hidden></button>
+
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+(function () {
+'use strict';
+const D = JSON.parse(document.getElementById('data').textContent);
+const css = getComputedStyle(document.documentElement);
+const V = n => css.getPropertyValue(n).trim();
+const CI_VAR = ['--main', '--d1', '--d2', '--d3'];
+let COL, HI, FG, FG2, FG3, LINE, LINE2, BG, NIGHT, NIGHT_ARC, GHOST, GHOST2, CELL0, CELLF, HEAT, GLOW_OP, GLOW_K, SPR, SPR_HI, SPR_ICE;
+function readTheme() {
+  COL = CI_VAR.map(V);
+  HI = V('--main-hi'); FG = V('--fg'); FG2 = V('--fg-2'); FG3 = V('--fg-3'); LINE = V('--line'); LINE2 = V('--line-2'); BG = V('--bg');
+  NIGHT = V('--night'); NIGHT_ARC = V('--night-arc'); GHOST = V('--ghost'); GHOST2 = V('--ghost-2'); CELL0 = V('--cell-0'); CELLF = V('--cell-f');
+  HEAT = [V('--heat-0'), V('--heat-1'), V('--heat-2')].map(hex2rgb);
+  GLOW_OP = V('--glow-op') || 'lighter'; GLOW_K = parseFloat(V('--glow-k')) || 1;
+  SPR = COL.map(c => sprite(hex2rgb(c))); SPR_HI = sprite(hex2rgb(HI)); SPR_ICE = sprite(HEAT[2]);
+  dirty = true;
+}
+const MONO = '"JetBrains Mono", ui-monospace, Menlo, monospace';
+const DISPLAY = '"Big Shoulders Display", "Noto Sans SC", sans-serif';
+const BODY = '"Noto Sans SC", "PingFang SC", system-ui, sans-serif';
+const TAU = Math.PI * 2, HOUR = 3600, DAY = 86400;
+const OFF = D.t0 + D.tz;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function hex2rgb(h) { h = h.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+const rgba = (rgb, a) => `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtN = n => Math.round(n).toLocaleString('en-US');
+const p2 = n => String(n).padStart(2, '0');
+const WK = '日一二三四五六';
+function lt(dt) { const d = new Date((dt + OFF) * 1000); return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1, d: d.getUTCDate(), h: d.getUTCHours(), mi: d.getUTCMinutes(), w: d.getUTCDay() }; }
+const fmtMD = dt => { const L = lt(dt); return `${L.m}/${L.d}`; };
+const fmtMDHM = dt => { const L = lt(dt); return `${L.m}/${L.d} ${p2(L.h)}:${p2(L.mi)}`; };
+const fmtDur = s => s < HOUR ? `${Math.max(1, Math.round(s / 60))} 分钟` : s < 2 * DAY ? `${(s / HOUR).toFixed(1)} 小时` : `${(s / DAY).toFixed(1)} 天`;
+
+// ---------- commits ----------
+const N = D.rows.length;
+const T = new Float64Array(N), LN = new Int32Array(N), AU = new Uint8Array(N), FC = new Uint32Array(N), SP = new Int32Array(N), ND = new Array(N);
+for (let i = 0; i < N; i++) { const r = D.rows[i]; T[i] = r[0]; LN[i] = r[1]; AU[i] = r[2]; FC[i] = r[3]; SP[i] = r[4]; ND[i] = r[5]; }
+const END = T[N - 1];
+const SUBJ = D.subjects;
+function ub(a, v) { let lo = 0, hi = a.length; while (lo < hi) { const m = (lo + hi) >> 1; if (a[m] <= v) lo = m + 1; else hi = m; } return lo; }
+function lb(a, v) { let lo = 0, hi = a.length; while (lo < hi) { const m = (lo + hi) >> 1; if (a[m] < v) lo = m + 1; else hi = m; } return lo; }
+const upTo = t => ub(T, t);      // commits with time <= t
+const before = t => lb(T, t);    // commits with time < t
+
+// ---------- lanes ----------
+const lanes = D.lanes.map((a, i) => ({ i, name: a[0], kind: a[1], pr: a[2], n: a[5], parent: a[6], into: a[7], fork: a[8], merge: a[9], trunk: a[1] === 'main' || a[1] === 'trunk', firstT: Infinity, lastT: -Infinity }));
+const laneCommits = lanes.map(() => []);
+for (let i = 0; i < N; i++) { const L = lanes[LN[i]]; if (T[i] < L.firstT) L.firstT = T[i]; if (T[i] > L.lastT) L.lastT = T[i]; laneCommits[LN[i]].push(i); }
+for (const L of lanes) {
+  L.forkT = L.fork != null ? T[L.fork] : L.firstT;
+  L.mergeT = L.merge != null ? T[L.merge] : null;
+  L.drawEnd = L.mergeT != null ? Math.max(L.lastT, L.mergeT) : L.lastT;
+  L.anon = L.name.startsWith('~');
+  L.label = L.anon ? L.name.slice(1) : L.name;
+  L.short = L.anon ? '' : L.trunk ? L.name : L.name.replace(/^.*\//, '');
+}
+const depth = new Int16Array(lanes.length).fill(-1);
+function dep(i, g) {
+  if (depth[i] >= 0) return depth[i];
+  const L = lanes[i];
+  if (L.trunk) return (depth[i] = 0);
+  const nx = L.into != null ? L.into : L.parent;
+  const v = nx == null || g > 60 ? 1 : 1 + dep(nx, g + 1);
+  return (depth[i] = v);
+}
+lanes.forEach(L => { L.depth = dep(L.i, 0); L.ci = Math.min(3, L.depth); });
+const MAXDEPTH = Math.max(...depth);
+const LEVEL = ['主干', '直接合入主干的分支', '二级分支', '三级及更深的分支'];
+
+// slot allocation: every lane gets a horizontal track, reused once it is free again.
+// Integration trunks own fixed tracks just below main; a lane may borrow one only if it ends before that trunk starts.
+const PAD = 1.2 * HOUR;
+const slotFree = new Map(), slotOpens = new Map();
+let alt = 1;
+lanes[0].slot = 0;
+const trunks = lanes.filter(L => L.kind === 'trunk');
+trunks.forEach((L, k) => { L.slot = -1 - k; slotOpens.set(L.slot, L.firstT - PAD); });
+lanes.filter(L => !L.trunk).sort((a, b) => a.firstT - b.firstT).forEach(L => {
+  const ref = L.into != null ? lanes[L.into] : L.parent != null ? lanes[L.parent] : null;
+  const ps = ref && ref.slot != null ? ref.slot : 0;
+  const side = ps === 0 ? (alt = -alt) : Math.sign(ps);
+  const s0 = L.firstT - PAD;
+  let chosen = null;
+  for (let k = 1; chosen === null && k < 600; k++) {
+    for (const c of [ps + side * k, ps - side * k]) {
+      if (c === 0 || (slotOpens.has(c) && L.drawEnd + PAD > slotOpens.get(c))) continue;
+      const f = slotFree.get(c);
+      if (f === undefined || f <= s0) { chosen = c; break; }
+    }
+  }
+  L.slot = chosen;
+  slotFree.set(chosen, L.drawEnd + PAD);
+});
+const MAXSLOT = Math.max(...lanes.map(L => Math.abs(L.slot)));
+const slotLanes = new Map();
+lanes.forEach(L => { if (!slotLanes.has(L.slot)) slotLanes.set(L.slot, []); slotLanes.get(L.slot).push(L); });
+
+// concurrency
+const others = lanes.filter(L => !L.trunk);
+// batch merges between trunks (integration/mainline into main, or back)
+const TRUNK_LINKS = [];
+for (let i = 0; i < N; i++) if (SP[i] >= 0 && lanes[LN[i]].trunk && lanes[LN[SP[i]]].trunk && LN[i] !== LN[SP[i]]) TRUNK_LINKS.push([SP[i], i]);
+const starts = Float64Array.from(others.map(L => L.firstT)).sort();
+const ends = Float64Array.from(others.map(L => L.drawEnd)).sort();
+const activeAt = t => ub(starts, t) - lb(ends, t);
+let MAXCONC = 0, MAXCONC_T = 0;
+{ const ev = []; others.forEach(L => { ev.push([L.firstT, 1], [L.drawEnd, -1]); }); ev.sort((a, b) => a[0] - b[0] || b[1] - a[1]); let c = 0; for (const [tt, d] of ev) { c += d; if (c > MAXCONC) { MAXCONC = c; MAXCONC_T = tt; } } }
+
+// merged PRs (GitHub merge commits)
+const prCum = new Int32Array(N + 1);
+for (let i = 0; i < N; i++) prCum[i + 1] = prCum[i] + (/^Merge pull request #\d+/.test(SUBJ[i]) ? 1 : 0);
+
+// ---------- calendar ----------
+const DAY0 = Math.floor(OFF / DAY) * DAY - OFF;
+const NDAYS = Math.floor((END - DAY0) / DAY) + 1;
+const dayIdx = new Int32Array(NDAYS + 1);
+for (let d = 0; d <= NDAYS; d++) dayIdx[d] = before(DAY0 + d * DAY);
+const cellIdx = new Int32Array(NDAYS * 24 + 1);
+for (let k = 0; k <= NDAYS * 24; k++) cellIdx[k] = before(DAY0 + k * HOUR);
+let MAXCELL = 1, MAXDAY = 1;
+for (let k = 0; k < NDAYS * 24; k++) MAXCELL = Math.max(MAXCELL, cellIdx[k + 1] - cellIdx[k]);
+const dayLanes = new Int32Array(NDAYS), dayHours = new Int32Array(NDAYS), dayCount = new Int32Array(NDAYS);
+for (let d = 0; d < NDAYS; d++) {
+  dayCount[d] = dayIdx[d + 1] - dayIdx[d];
+  MAXDAY = Math.max(MAXDAY, dayCount[d]);
+  const s = new Set(); for (let i = dayIdx[d]; i < dayIdx[d + 1]; i++) s.add(LN[i]); dayLanes[d] = s.size;
+  let hc = 0; for (let h = 0; h < 24; h++) if (cellIdx[d * 24 + h + 1] > cellIdx[d * 24 + h]) hc++; dayHours[d] = hc;
+}
+
+// ---------- module nodes ----------
+const NODES = D.nodes, NN = NODES.length;
+const hits = NODES.map(() => []);
+for (let i = 0; i < N; i++) for (const k of ND[i]) hits[k].push(i);
+const hitsA = hits.map(a => Int32Array.from(a));
+
+// ---------- static findings ----------
+const spanDays = END / DAY;
+const hourTot = new Int32Array(24);
+for (let k = 0; k < NDAYS * 24; k++) hourTot[k % 24] += cellIdx[k + 1] - cellIdx[k];
+const night = hourTot.slice(0, 6).reduce((a, b) => a + b, 0);
+let quietH = 0; for (let h = 1; h < 24; h++) if (hourTot[h] < hourTot[quietH]) quietH = h;
+const fullDays = Array.from(dayHours).filter(v => v >= 20).length;
+let peakD = 0; for (let d = 1; d < NDAYS; d++) if (dayCount[d] > dayCount[peakD]) peakD = d;
+let lanePeakD = 0; for (let d = 1; d < NDAYS; d++) if (dayLanes[d] > dayLanes[lanePeakD]) lanePeakD = d;
+const lifetimes = lanes.filter(L => L.mergeT != null && !L.trunk).map(L => L.mergeT - L.firstT).sort((a, b) => a - b);
+const medianMerge = lifetimes[lifetimes.length >> 1];
+const avgGap = END / (N - 1);
+const dayLabel = d => { const L = lt(DAY0 + d * DAY + 1); return `${L.m} 月 ${L.d} 日`; };
+const hoursCovered = Array.from(hourTot).filter(v => v > 0).length;
+const recent7 = N - before(END - 7 * DAY);
+const partOfDay = h => h < 5 ? '凌晨' : h < 9 ? '清晨' : h < 12 ? '上午' : h < 14 ? '中午' : h < 18 ? '下午' : '晚上';
+const mdZh = dt => { const L = lt(dt); return `${L.m} 月 ${L.d} 日`; };
+
+const $ = id => document.getElementById(id);
+$('h-days').textContent = Math.round(spanDays);
+$('h-commits').textContent = fmtN(N);
+$('snap').textContent = `数据截至 ${lt(END).y}-${p2(lt(END).m)}-${p2(lt(END).d)} ${p2(lt(END).h)}:${p2(lt(END).mi)}`;
+$('lede').textContent = `从 ${lt(0).m} 月 ${lt(0).d} 日第一笔提交，到 ${mdZh(END)}${partOfDay(lt(END).h)}，${D.meta.heads} 个分支和 ${D.meta.pulls} 个 PR 里的每一次提交都在这里。按下播放，或者拖动底部时间轴，回到任意一个时刻。`;
+$('f-rate').textContent = Math.round(N / spanDays);
+$('f-rate-p').innerHTML = `平均每 <b>${Math.round(avgGap / 60)} 分钟</b>一笔提交，单日峰值 <b>${fmtN(dayCount[peakD])} 次</b>（${dayLabel(peakD)}），最近 7 天日均 <b>${fmtN(recent7 / 7)} 次</b>。一条分支从第一笔提交到合并，中位只要 <b>${fmtDur(medianMerge)}</b>。`;
+$('f-hours').textContent = `${hoursCovered}/24`;
+$('f-hours-p').innerHTML = `凌晨 0–6 点累计 <b>${fmtN(night)} 次</b>提交，占 ${Math.round(night / N * 100)}%；最冷清的 ${p2(quietH)} 点也有 <b>${fmtN(hourTot[quietH])} 次</b>。有 <b>${fullDays} 天</b>的提交覆盖了至少 20 个整点。`;
+$('f-par').textContent = MAXCONC;
+$('f-par-p').innerHTML = `${Math.round(spanDays)} 天里共还原出 <b>${fmtN(others.length)} 条</b>分支线，最深嵌套 ${MAXDEPTH} 层。${dayLabel(lanePeakD)}这一天，有 <b>${dayLanes[lanePeakD]} 条</b>分支线都有新提交。` +
+  trunks.map(L => `${mdZh(L.firstT)}起，<b>${fmtN(laneCommits[L.i].filter(i => /^Merge pull request #\d+/.test(SUBJ[i])).length)} 个 PR</b> 合入集成主线 ${esc(L.name)}，再由它分 ${TRUNK_LINKS.filter(([a, b]) => LN[a] === L.i && LN[b] === 0).length} 批合入 main。`).join('');
+$('clock-cap').textContent = `一圈是一天的 24 个小时，由内到外是 ${mdZh(DAY0 + 1)}到 ${mdZh(END)}的每一天。格子越亮，那个小时提交越多；金色指针是当前时刻。`;
+$('s-gap').innerHTML = `${(avgGap / 60).toFixed(1)}<small>分钟</small>`;
+$('s-merge').innerHTML = medianMerge < HOUR ? `${Math.round(medianMerge / 60)}<small>分钟</small>` : `${(medianMerge / HOUR).toFixed(1)}<small>小时</small>`;
+
+// team: bar length is log10(commits) on a plain log axis from 1; the number beside it is the real count
+{
+  const cnt = D.meta.authors.map(() => 0); for (let i = 0; i < N; i++) cnt[AU[i]]++;
+  const lg = c => Math.log10(Math.max(1, c));
+  const top = Math.max(1, Math.ceil(lg(Math.max(...cnt))));
+  $('team-line').textContent = `提交作者：${D.meta.authors.length} 个 git 作者名`;
+  $('team-rows').style.setProperty('--seg', `${100 / top}%`);
+  $('team-rows').innerHTML = D.meta.authors.map((nm, a) => [nm, cnt[a]]).sort((p, q) => q[1] - p[1]).map(([nm, c]) => `<div class="team-row"><span>${esc(nm)}</span><span class="bar"><i style="width:${(lg(c) / top * 100).toFixed(1)}%"></i></span><span class="lg">${fmtN(c)}</span></div>`).join('') +
+    `<div class="team-row team-axis" aria-hidden="true"><span></span><span class="ax">${Array.from({ length: top + 1 }, (_, k) => `<b style="left:${(k / top * 100).toFixed(3)}%">${k >= 4 ? `${10 ** (k - 4)} 万` : 10 ** k}</b>`).join('')}</span><span></span></div>`;
+}
+
+// daily table
+$('day-table').querySelector('tbody').innerHTML = Array.from({ length: NDAYS }, (_, d) => {
+  const L = lt(DAY0 + d * DAY + 1);
+  return `<tr><td>${L.y}-${p2(L.m)}-${p2(L.d)} 周${WK[L.w]}</td><td>${fmtN(dayCount[d])}</td><td>${dayHours[d]}</td><td>${dayLanes[d]}</td></tr>`;
+}).join('');
+
+$('notes').innerHTML = [
+  `<div><b>数据来源</b>：对 <a href="https://github.com/nemori-ai/omne-harness-lite" style="color:inherit" target="_blank" rel="noopener">github.com/nemori-ai/omne-harness-lite</a> 做 <code>git clone --mirror</code>，取 ${D.meta.heads} 个分支与 ${D.meta.pulls} 个 PR 引用里全部 ${fmtN(N)} 个不重复提交。时间一律换算为北京时间（UTC+8）。</div>`,
+  `<div><b>分支线</b>：按合并拓扑还原的独立开发线（沿 first-parent 回溯，含已删除的分支）。integration/mainline 按主干处理，画成 main 下方的一条金线，合入它的分支算作直接合入主干。"并行"指两条分支线从第一笔提交到合并的时间段有重叠。</div>`,
+  `<div><b>代码星图</b>：把改动文件按前两级目录聚合成 ${NN} 个模块。<b>提交作者</b>按 git 记录的作者名统计，不合并账号；条长按 log₁₀(提交数) 画，旁边是实际提交数。</div>`
+].join('');
+
+if (D.meta.live) $('notes').insertAdjacentHTML('beforeend', '<div><b>自动更新</b>：每 10 分钟从仓库重新生成一次。开着的页面每分钟检查一次，停在“现在”时直接载入新数据，正在回放时顶部会出现载入按钮。</div>');
+else if (D.meta.site) $('notes').insertAdjacentHTML('beforeend', `<div><b>自动更新的版本</b>：<a href="${esc(D.meta.site)}" style="color:inherit" target="_blank" rel="noopener">${esc(D.meta.site.replace(/^https?:\/\//, ''))}</a>，每 10 分钟从仓库重新生成一次。这一页是快照。</div>`);
+
+// ---------- canvas plumbing ----------
+let dirty = true;
+const visible = new Set();
+const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) visible.add(e.target.id); else visible.delete(e.target.id); }); dirty = true; });
+function stage(id, after) {
+  const canvas = $(id), ctx = canvas.getContext('2d');
+  const st = { canvas, ctx, w: 0, h: 0 };
+  new ResizeObserver(() => {
+    const r = canvas.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+    st.w = r.width; st.h = r.height;
+    canvas.width = Math.max(1, Math.round(r.width * dpr)); canvas.height = Math.max(1, Math.round(r.height * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (after) after(st);
+    dirty = true;
+  }).observe(canvas);
+  io.observe(canvas);
+  return st;
+}
+function sprite(rgb) {
+  const s = 64, c = document.createElement('canvas'); c.width = c.height = s;
+  const g = c.getContext('2d'), gr = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+  gr.addColorStop(0, rgba(rgb, 1)); gr.addColorStop(0.22, rgba(rgb, 0.5)); gr.addColorStop(1, rgba(rgb, 0));
+  g.fillStyle = gr; g.fillRect(0, 0, s, s); return c;
+}
+readTheme();
+function curve(p, x0, y0, x1, y1) { const mx = (x0 + x1) / 2; p.moveTo(x0, y0); p.bezierCurveTo(mx, y0, mx, y1, x1, y1); }
+
+// ---------- state ----------
+let t = END, playing = false, dir = 1, speed = 43200, camera = 'follow', intro = null, scrubbing = false;
+let yMax = 8, hoverLane = null, hoverCell = null, hoverDay = null;
+
+// ---------- view: branch river ----------
+const RV = stage('river');
+function renderRiver() {
+  const { ctx, w, h } = RV; if (!w) return;
+  ctx.clearRect(0, 0, w, h);
+  const full = camera === 'full';
+  const WINDOW = (w < 640 ? 1.3 : 2.6) * DAY;
+  const padT = 30, padB = 22, padL = full ? 8 : 0, padR = full ? 12 : 0;
+  let x, ix, t0v, t1v;
+  if (full) { const k = (w - padL - padR) / END; x = v => padL + v * k; ix = px => (px - padL) / k; t0v = 0; t1v = END; }
+  else { const ph = w * 0.8, k = ph / WINDOW; x = v => ph + (v - t) * k; ix = px => t + (px - ph) / k; t0v = t - WINDOW; t1v = t + WINDOW * 0.25; }
+  let target = 4;
+  if (full) target = MAXSLOT;
+  else for (const L of others) if (L.firstT <= t && L.drawEnd >= t0v) { const a = Math.abs(L.slot); if (a > target) target = a; }
+  yMax += (target - yMax) * 0.16;
+  if (Math.abs(target - yMax) > 0.02) dirty = true; else yMax = target;
+  const cy = padT + (h - padT - padB) / 2, sh = ((h - padT - padB) / 2 - 4) / (yMax + 0.6);
+  const y = s => cy - s * sh;
+  RV.map = { x, ix, y, cy, sh };
+
+  // night bands, day lines, labels
+  const dA = Math.floor((t0v - DAY0) / DAY) - 1, dB = Math.ceil((t1v - DAY0) / DAY);
+  ctx.textBaseline = 'middle';
+  for (let d = Math.max(0, dA); d <= Math.min(NDAYS, dB); d++) {
+    const ds = DAY0 + d * DAY, xa = x(ds), xb = x(ds + 6 * HOUR);
+    ctx.fillStyle = NIGHT; ctx.fillRect(xa, padT - 8, xb - xa, h - padT + 8 - padB + 4);
+    ctx.fillStyle = LINE; ctx.fillRect(Math.round(xa), 4, 1, h - 8);
+    const L = lt(ds + 1);
+    ctx.font = '11px ' + MONO;
+    if (!full) {
+      ctx.fillStyle = FG2; ctx.fillText(`${L.m}/${L.d} 周${WK[L.w]}`, xa + 6, 12);
+      ctx.fillStyle = FG3;
+      for (const hh of [6, 12, 18]) { const xh = x(ds + hh * HOUR); ctx.fillRect(Math.round(xh), h - padB + 2, 1, 4); ctx.fillText(p2(hh), xh + 4, h - 8); }
+      if (xb - xa > 46) { ctx.fillText('深夜', xa + 6, h - 8); }
+    } else if (d % 7 === 0 || d === 0) {
+      ctx.fillStyle = FG2; ctx.fillText(`${L.m}/${L.d}`, xa + 4, 12);
+    }
+  }
+  // the future is dark
+  const xNow = x(t);
+  const fg = ctx.createLinearGradient(xNow, 0, Math.min(w, xNow + 120), 0);
+  const bgr = hex2rgb(BG); fg.addColorStop(0, rgba(bgr, 0.15)); fg.addColorStop(1, rgba(bgr, 0.7));
+  ctx.fillStyle = fg; ctx.fillRect(xNow, 0, w - xNow, h);
+
+  // trunks: main plus integration lines, joined by their batch merges
+  ctx.lineCap = 'round';
+  const tk = new Path2D(), tkLinks = new Path2D();
+  tk.moveTo(Math.max(x(0), -10), cy); tk.lineTo(xNow, cy);
+  for (const L of trunks) {
+    if (L.firstT > t) continue;
+    const yy = y(L.slot), xs = x(L.firstT);
+    tk.moveTo(xs, yy); tk.lineTo(Math.max(xs + 0.6, x(Math.min(t, L.lastT))), yy);
+    curve(tkLinks, x(L.forkT), y(lanes[LN[L.fork]].slot), xs, yy);
+  }
+  for (const [a, b] of TRUNK_LINKS) if (T[b] <= t && T[b] >= t0v - 3 * HOUR) curve(tkLinks, x(T[a]), y(lanes[LN[a]].slot), x(T[b]), y(lanes[LN[b]].slot));
+  ctx.strokeStyle = COL[0];
+  ctx.globalAlpha = 0.22; ctx.lineWidth = full ? 6 : 9; ctx.stroke(tk);
+  ctx.globalAlpha = 1; ctx.lineWidth = full ? 1.8 : 2.6; ctx.stroke(tk);
+  ctx.globalAlpha = 0.75; ctx.lineWidth = full ? 1 : 1.6; ctx.stroke(tkLinks); ctx.globalAlpha = 1;
+
+  // lanes
+  const bodies = COL.map(() => new Path2D()), conns = COL.map(() => new Path2D()), waits = COL.map(() => new Path2D());
+  const labels = [];
+  for (const L of others) {
+    if (L.firstT > t || L.drawEnd < t0v - 3 * HOUR) continue;
+    const c = L.ci, yy = y(L.slot), xs = x(L.firstT), xe = x(Math.min(L.lastT, t));
+    const fl = L.fork != null ? lanes[LN[L.fork]] : L.parent != null ? lanes[L.parent] : lanes[0];
+    curve(conns[c], x(Math.max(L.forkT, L.firstT - (full ? 8 : 1.2) * HOUR)), y(fl.slot), xs, yy);
+    bodies[c].moveTo(xs, yy); bodies[c].lineTo(Math.max(xe, xs + 0.6), yy);
+    if (L.mergeT != null && L.mergeT <= t) curve(conns[c], xe, yy, x(L.mergeT), y(lanes[LN[L.merge]].slot));
+    else if (L.lastT < t && (L.mergeT != null || t - L.lastT < 6 * HOUR)) { waits[c].moveTo(xe, yy); waits[c].lineTo(x(L.mergeT != null ? Math.min(t, L.mergeT) : t), yy); }
+    if (!full && !L.anon && L.n >= 8 && xs > 4 && xs < xNow - 60) labels.push(L);
+  }
+  for (let c = 0; c < 4; c++) {
+    ctx.strokeStyle = COL[c];
+    ctx.globalAlpha = 0.5; ctx.lineWidth = full ? 0.7 : 1.1; ctx.stroke(conns[c]);
+    ctx.globalAlpha = 0.95; ctx.lineWidth = full ? 0.9 : 1.7; ctx.stroke(bodies[c]);
+    ctx.globalAlpha = 0.35; ctx.setLineDash([2, 4]); ctx.lineWidth = 1; ctx.stroke(waits[c]); ctx.setLineDash([]);
+  }
+  ctx.globalAlpha = 1;
+  if (hoverLane && hoverLane.kind !== 'main' && hoverLane.firstT <= t) {
+    const L = hoverLane, yy = y(L.slot);
+    ctx.strokeStyle = HI; ctx.lineWidth = 2.6;
+    ctx.beginPath(); ctx.moveTo(x(L.firstT), yy); ctx.lineTo(x(Math.min(t, L.mergeT != null && L.mergeT <= t ? L.lastT : Math.min(t, L.drawEnd))), yy); ctx.stroke();
+  }
+
+  // commits
+  const G = full ? 20 * HOUR : 7 * HOUR;
+  const i0 = before(t0v - 2 * HOUR), i1 = upTo(t);
+  const dots = COL.map(() => new Path2D()), rings = new Path2D(), glow = [];
+  for (let i = i0; i < i1; i++) {
+    const L = lanes[LN[i]], xx = x(T[i]); if (xx < -12) continue;
+    const yy = y(L.slot);
+    if (full) dots[L.ci].rect(xx - 0.8, yy - 0.8, 1.6, 1.6);
+    else {
+      const r = 1.5 + Math.min(3, Math.log2(1 + FC[i]) * 0.48);
+      dots[L.ci].moveTo(xx + r, yy); dots[L.ci].arc(xx, yy, r, 0, TAU);
+      if (SP[i] >= 0) { rings.moveTo(xx + r + 2.2, yy); rings.arc(xx, yy, r + 2.2, 0, TAU); }
+    }
+    const age = t - T[i]; if (age < G) glow.push(i, xx, yy, 1 - age / G);
+  }
+  for (let c = 0; c < 4; c++) { ctx.fillStyle = COL[c]; ctx.fill(dots[c]); }
+  ctx.strokeStyle = FG; ctx.globalAlpha = 0.55; ctx.lineWidth = 1; ctx.stroke(rings); ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = GLOW_OP;
+  for (let k = 0; k < glow.length; k += 4) {
+    const i = glow[k], xx = glow[k + 1], yy = glow[k + 2], a = glow[k + 3];
+    const s = full ? 8 + 10 * a : 12 + 26 * a * a;
+    ctx.globalAlpha = a * 0.85 * GLOW_K; ctx.drawImage(SPR[lanes[LN[i]].ci], xx - s / 2, yy - s / 2, s, s);
+    if (!full && a > 0.86) {
+      const p = (1 - a) / 0.14;
+      ctx.globalAlpha = (1 - p) * 0.9; ctx.strokeStyle = HI; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(xx, yy, 3 + p * 16, 0, TAU); ctx.stroke();
+    }
+  }
+  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+
+  // labels (follow camera only)
+  if (labels.length) {
+    labels.sort((a, b) => b.n - a.n);
+    const placed = [];
+    ctx.font = '10.5px ' + MONO; ctx.textBaseline = 'alphabetic';
+    for (const L of labels) {
+      if (placed.length >= 7) break;
+      const lx = x(L.firstT) + 4, ly = y(L.slot) - 5, tw = ctx.measureText(L.short).width;
+      if (placed.some(p => Math.abs(p[1] - ly) < 12 && lx < p[0] + p[2] + 8 && p[0] < lx + tw + 8)) continue;
+      if (ly < padT + 4 || ly > h - padB) continue;
+      placed.push([lx, ly, tw]);
+      ctx.lineWidth = 3; ctx.strokeStyle = BG; ctx.strokeText(L.short, lx, ly);
+      ctx.fillStyle = FG2; ctx.fillText(L.short, lx, ly);
+    }
+  }
+  ctx.font = '600 11px ' + MONO; ctx.textBaseline = 'alphabetic';
+  { const lx = Math.max(6, x(0) + 6); ctx.lineWidth = 3; ctx.strokeStyle = BG; ctx.strokeText('main', lx, cy - 7); ctx.fillStyle = HI; ctx.fillText('main', lx, cy - 7); }
+  for (const L of trunks) if (L.firstT <= t) { const lx = Math.max(6, x(L.firstT) + 6), ly = y(L.slot) + 14; ctx.strokeText(L.name, lx, ly); ctx.fillText(L.name, lx, ly); }
+
+  // playhead
+  ctx.save();
+  const pg = ctx.createLinearGradient(0, 0, 0, h);
+  pg.addColorStop(0, rgba(hex2rgb(HI), 0)); pg.addColorStop(0.15, rgba(hex2rgb(HI), 0.9)); pg.addColorStop(0.85, rgba(hex2rgb(HI), 0.9)); pg.addColorStop(1, rgba(hex2rgb(HI), 0));
+  ctx.shadowColor = HI; ctx.shadowBlur = 14; ctx.fillStyle = pg; ctx.fillRect(xNow - 1, 18, 2, h - 30);
+  ctx.restore();
+  ctx.fillStyle = HI; ctx.beginPath(); ctx.moveTo(xNow - 5, 18); ctx.lineTo(xNow + 5, 18); ctx.lineTo(xNow, 25); ctx.closePath(); ctx.fill();
+  if (!full && xNow + 10 < w) {
+    const n = activeAt(t);
+    ctx.font = '11px ' + MONO; ctx.fillStyle = FG2; ctx.textBaseline = 'middle';
+    ctx.fillText(`${n} 条并行`, xNow + 10, 38);
+  }
+}
+(function riverHover() {
+  const c = RV.canvas;
+  c.addEventListener('pointermove', e => {
+    const m = RV.map; if (!m) return;
+    const r = c.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+    const tt = m.ix(px);
+    if (tt > t + HOUR || tt < 0) { setHoverLane(null); hideTip(); return; }
+    const s = Math.round((m.cy - py) / m.sh);
+    let L = null;
+    if (s === 0) L = lanes[0];
+    else for (const c2 of slotLanes.get(s) || []) if (c2.firstT - 0.6 * HOUR <= tt && tt <= c2.drawEnd + 0.6 * HOUR && c2.firstT <= t) { L = c2; break; }
+    if (!L) { setHoverLane(null); hideTip(); return; }
+    setHoverLane(L);
+    // nearest commit on this lane
+    const cs = laneCommits[L.i]; let lo = 0, hi = cs.length;
+    while (lo < hi) { const md = (lo + hi) >> 1; if (T[cs[md]] < tt) lo = md + 1; else hi = md; }
+    let best = -1, bd = 9;
+    for (const k of [lo - 1, lo]) if (k >= 0 && k < cs.length && T[cs[k]] <= t) { const d = Math.abs(m.x(T[cs[k]]) - px); if (d < bd) { bd = d; best = cs[k]; } }
+    const lvl = LEVEL[L.ci];
+    let html;
+    if (best >= 0) {
+      html = `<div class="t">${fmtMDHM(T[best])} · ${esc(L.anon ? '未命名分支' : L.label)}</div><div><b>${esc(SUBJ[best])}</b></div><div class="s">改动 ${fmtN(FC[best])} 个文件${SP[best] >= 0 ? ' · 合并提交' : ''}</div>`;
+    } else if (L.trunk) {
+      html = `<div><b>${esc(L.name)}</b></div><div class="s">${L.kind === 'main' ? '主干' : '集成主线'}，共 ${fmtN(L.n)} 个 first-parent 提交</div>`;
+    } else {
+      const into = L.into != null ? lanes[L.into] : null;
+      html = `<div><b>${esc(L.anon ? '未命名分支' : L.label)}</b></div>` + (L.anon ? `<div class="s">末次提交：${esc(L.label)}</div>` : '') +
+        `<div class="s">${lvl} · ${fmtN(L.n)} 次提交</div><div class="t">${fmtMDHM(L.firstT)} → ${L.mergeT != null ? fmtMDHM(L.mergeT) + ' 合并' : fmtMDHM(L.lastT)}</div>` +
+        (L.mergeT != null ? `<div class="s">从第一笔提交到合并 ${fmtDur(L.mergeT - L.firstT)}${into ? '，合入 ' + esc(into.anon ? '上一级分支' : into.short || into.label) : ''}</div>` : '');
+    }
+    showTip(html, e.clientX, e.clientY);
+  });
+  c.addEventListener('pointerleave', () => { setHoverLane(null); hideTip(); });
+})();
+function setHoverLane(L) { if (L !== hoverLane) { hoverLane = L; dirty = true; } }
+
+// ---------- view: 24h clock ----------
+const CK = stage('clock');
+function heat(v) { // v in 0..1, single hue dark->bright
+  const a = v < 0.5 ? HEAT[0] : HEAT[1], b = v < 0.5 ? HEAT[1] : HEAT[2], k = v < 0.5 ? v * 2 : (v - 0.5) * 2;
+  return `rgb(${Math.round(a[0] + (b[0] - a[0]) * k)},${Math.round(a[1] + (b[1] - a[1]) * k)},${Math.round(a[2] + (b[2] - a[2]) * k)})`;
+}
+function clockGeom() { const { w, h } = CK, S = Math.min(w, h), R = S / 2 - 26, r0 = R * 0.3; return { cx: w / 2, cy: h / 2, R, r0, th: (R - r0) / NDAYS }; }
+function renderClock() {
+  const { ctx, w, h } = CK; if (!w) return;
+  ctx.clearRect(0, 0, w, h);
+  const { cx, cy, R, r0, th } = clockGeom();
+  const it = upTo(t), seg = TAU / 24, gapA = th > 3 ? 0.012 : 0.004;
+  // night arc
+  ctx.strokeStyle = NIGHT_ARC; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(cx, cy, R + 7, -Math.PI / 2, -Math.PI / 2 + 6 * seg); ctx.stroke();
+  for (let d = 0; d < NDAYS; d++) {
+    const ri = r0 + d * th, ro = ri + th - (th > 3 ? 0.7 : 0.2);
+    for (let hh = 0; hh < 24; hh++) {
+      const k = d * 24 + hh, a = cellIdx[k], b = cellIdx[k + 1];
+      const cs = DAY0 + k * HOUR;
+      const a0 = -Math.PI / 2 + hh * seg + gapA, a1 = a0 + seg - gapA * 2;
+      ctx.beginPath(); ctx.arc(cx, cy, ro, a0, a1); ctx.arc(cx, cy, ri, a1, a0, true); ctx.closePath();
+      if (cs > t || cs + HOUR < 0 || cs > END) { ctx.fillStyle = CELLF; ctx.fill(); continue; }
+      const n = Math.max(0, Math.min(b, it) - a);
+      ctx.fillStyle = n === 0 ? CELL0 : heat(Math.sqrt(n / MAXCELL));
+      ctx.fill();
+    }
+  }
+  if (hoverCell) {
+    const { d, hh } = hoverCell, ri = r0 + d * th, ro = ri + th, a0 = -Math.PI / 2 + hh * seg, a1 = a0 + seg;
+    ctx.strokeStyle = FG; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(cx, cy, ro, a0, a1); ctx.arc(cx, cy, ri, a1, a0, true); ctx.closePath(); ctx.stroke();
+  }
+  // hour labels
+  ctx.font = '11px ' + MONO; ctx.fillStyle = FG3; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (let hh = 0; hh < 24; hh += 3) { const a = -Math.PI / 2 + hh * seg; ctx.fillText(hh === 0 ? '0时' : String(hh), cx + Math.cos(a) * (R + 17), cy + Math.sin(a) * (R + 17)); }
+  // current day ring + hand
+  const L = lt(t), dNow = Math.min(NDAYS - 1, Math.floor((t - DAY0) / DAY));
+  const ang = -Math.PI / 2 + (L.h + L.mi / 60) * seg;
+  ctx.strokeStyle = rgba(hex2rgb(HI), 0.35); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(cx, cy, r0 + (dNow + 0.5) * th, 0, TAU); ctx.stroke();
+  ctx.save(); ctx.shadowColor = HI; ctx.shadowBlur = 10; ctx.strokeStyle = HI; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(cx + Math.cos(ang) * (r0 - 6), cy + Math.sin(ang) * (r0 - 6)); ctx.lineTo(cx + Math.cos(ang) * (R + 4), cy + Math.sin(ang) * (R + 4)); ctx.stroke(); ctx.restore();
+  const hr = r0 + (dNow + 0.5) * th;
+  ctx.globalCompositeOperation = GLOW_OP; ctx.globalAlpha = GLOW_K; ctx.drawImage(SPR_HI, cx + Math.cos(ang) * hr - 14, cy + Math.sin(ang) * hr - 14, 28, 28); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  // center
+  let covered = 0; for (let hh = 0; hh < 24; hh++) { let s = 0; for (let d = 0; d <= dNow && !s; d++) { const k = d * 24 + hh; s = Math.min(cellIdx[k + 1], it) - cellIdx[k] > 0; } if (s) covered++; }
+  ctx.fillStyle = FG; ctx.font = `800 ${Math.round(r0 * 0.62)}px ${DISPLAY}`; ctx.fillText(`${covered}/24`, cx, cy - r0 * 0.08);
+  ctx.fillStyle = FG2; ctx.font = `${Math.max(10, Math.round(r0 * 0.15))}px ${BODY}`; ctx.fillText('个整点有提交', cx, cy + r0 * 0.42);
+  ctx.textAlign = 'start';
+}
+function clockStats() {
+  const it = upTo(t);
+  let nightC = 0; const per = new Int32Array(24);
+  for (let k = 0; k < NDAYS * 24; k++) { const n = Math.max(0, Math.min(cellIdx[k + 1], it) - cellIdx[k]); per[k % 24] += n; if (k % 24 < 6) nightC += n; }
+  let q = 0; for (let hh = 1; hh < 24; hh++) if (per[hh] < per[q]) q = hh;
+  const dNow = Math.floor((t - DAY0) / DAY);
+  let fd = 0; for (let d = 0; d <= Math.min(dNow, NDAYS - 1); d++) { let hc = 0; for (let hh = 0; hh < 24; hh++) { const k = d * 24 + hh; if (Math.min(cellIdx[k + 1], it) > cellIdx[k]) hc++; } if (hc >= 20) fd++; }
+  $('s-night').innerHTML = `${fmtN(nightC)}<small>次</small>`;
+  $('s-quiet').innerHTML = `${p2(q)}<small>时 · ${fmtN(per[q])} 次</small>`;
+  $('s-full').innerHTML = `${fd}<small>天</small>`;
+}
+function clockHit(e) {
+  const r = CK.canvas.getBoundingClientRect(), { cx, cy, r0, th } = clockGeom();
+  const dx = e.clientX - r.left - cx, dy = e.clientY - r.top - cy, rr = Math.hypot(dx, dy);
+  const d = Math.floor((rr - r0) / th); if (d < 0 || d >= NDAYS) return null;
+  let a = Math.atan2(dy, dx) + Math.PI / 2; if (a < 0) a += TAU;
+  return { d, hh: Math.floor(a / (TAU / 24)) % 24 };
+}
+CK.canvas.addEventListener('pointermove', e => {
+  const c = clockHit(e);
+  if (!c) { if (hoverCell) { hoverCell = null; dirty = true; } hideTip(); return; }
+  if (!hoverCell || c.d !== hoverCell.d || c.hh !== hoverCell.hh) { hoverCell = c; dirty = true; }
+  const k = c.d * 24 + c.hh, cs = DAY0 + k * HOUR, L = lt(cs + 1);
+  const n = cs > t ? null : Math.max(0, Math.min(cellIdx[k + 1], upTo(t)) - cellIdx[k]);
+  showTip(`<div class="t">${L.m} 月 ${L.d} 日 周${WK[L.w]} · ${p2(c.hh)}:00–${p2((c.hh + 1) % 24)}:00</div><div><b>${n == null ? '还没到这个时刻' : fmtN(n) + ' 次提交'}</b></div><div class="s">点击跳到这个小时</div>`, e.clientX, e.clientY);
+});
+CK.canvas.addEventListener('pointerleave', () => { hoverCell = null; dirty = true; hideTip(); });
+CK.canvas.addEventListener('click', e => { const c = clockHit(e); if (c) jump(Math.min(END, DAY0 + (c.d * 24 + c.hh + 1) * HOUR)); });
+
+// ---------- view: daily velocity ----------
+const VL = stage('vel');
+function velGeom() { const { w, h } = VL, padL = 34, padR = 8, padT = 18, padB = 22; return { padL, padR, padT, padB, bw: (w - padL - padR) / NDAYS, ph: h - padT - padB }; }
+const YMAXV = Math.ceil(MAXDAY / 200) * 200;
+function renderVel() {
+  const { ctx, w, h } = VL; if (!w) return;
+  ctx.clearRect(0, 0, w, h);
+  const { padL, padT, bw, ph } = velGeom();
+  const yv = v => padT + ph - v / YMAXV * ph;
+  ctx.font = '10.5px ' + MONO; ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
+  for (let v = 0; v <= YMAXV; v += 200) { const yy = Math.round(yv(v)) + 0.5; ctx.fillStyle = LINE; ctx.fillRect(padL, yy, w - padL, 1); ctx.fillStyle = FG3; ctx.fillText(String(v), padL - 6, yy); }
+  ctx.textAlign = 'start';
+  const it = upTo(t), dNow = Math.floor((t - DAY0) / DAY);
+  let peak = 0, peakDay = -1;
+  for (let d = 0; d < NDAYS; d++) {
+    const x0 = padL + d * bw + bw * 0.16, bwi = Math.max(1, bw * 0.68);
+    const full = dayCount[d];
+    // ghost of the future
+    ctx.fillStyle = GHOST;
+    roundTop(ctx, x0, yv(full), bwi, padT + ph - yv(full), 2);
+    if (d > dNow) continue;
+    const n = Math.max(0, Math.min(dayIdx[d + 1], it) - dayIdx[d]);
+    if (n > peak) { peak = n; peakDay = d; }
+    ctx.fillStyle = d === hoverDay ? HI : COL[0];
+    roundTop(ctx, x0, yv(n), bwi, padT + ph - yv(n), 2);
+    if (d === dNow && n > 0) { ctx.globalCompositeOperation = GLOW_OP; ctx.globalAlpha = 0.8 * GLOW_K; ctx.drawImage(SPR_HI, x0 + bwi / 2 - 18, yv(n) - 18, 36, 36); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; }
+  }
+  if (peakDay >= 0) {
+    const xx = padL + peakDay * bw + bw / 2;
+    ctx.fillStyle = FG; ctx.font = '600 11px ' + MONO; ctx.textAlign = xx > w - 40 ? 'right' : 'center';
+    ctx.fillText(fmtN(peak), Math.min(w - 2, xx), yv(peak) - 9); ctx.textAlign = 'start';
+  }
+  ctx.fillStyle = FG3; ctx.font = '10.5px ' + MONO; ctx.textBaseline = 'alphabetic';
+  for (let d = 0; d < NDAYS; d += 14) ctx.fillText(fmtMD(DAY0 + d * DAY + 1), padL + d * bw, h - 4);
+  $('s-peak').innerHTML = `${fmtN(peak)}<small>次</small>`;
+}
+function roundTop(ctx, x, y, w, h, r) { if (h <= 0) return; r = Math.min(r, h, w / 2); ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h); ctx.closePath(); ctx.fill(); }
+function velHit(e) { const r = VL.canvas.getBoundingClientRect(), { padL, bw } = velGeom(); const d = Math.floor((e.clientX - r.left - padL) / bw); return d >= 0 && d < NDAYS ? d : null; }
+VL.canvas.addEventListener('pointermove', e => {
+  const d = velHit(e);
+  if (d !== hoverDay) { hoverDay = d; dirty = true; }
+  if (d == null) { hideTip(); return; }
+  const L = lt(DAY0 + d * DAY + 1);
+  showTip(`<div class="t">${L.m} 月 ${L.d} 日 周${WK[L.w]}</div><div><b>${fmtN(dayCount[d])} 次提交</b></div><div class="s">${dayHours[d]} 个整点有提交 · ${dayLanes[d]} 条分支线有新提交</div>`, e.clientX, e.clientY);
+});
+VL.canvas.addEventListener('pointerleave', () => { hoverDay = null; dirty = true; hideTip(); });
+VL.canvas.addEventListener('click', e => { const d = velHit(e); if (d != null) jump(Math.min(END, DAY0 + (d + 1) * DAY - 1)); });
+
+// ---------- view: code constellation ----------
+const ST = stage('stars', layoutStars);
+const groupsOrder = [];
+const nodeGroup = NODES.map(n => n.split('/')[0]);
+{
+  const tot = new Map();
+  NODES.forEach((n, k) => { const g = nodeGroup[k]; tot.set(g, (tot.get(g) || 0) + D.nodeCount[k]); });
+  // keep big groups apart by alternating sizes around the ring
+  const sorted = [...tot.entries()].sort((a, b) => b[1] - a[1]).map(e => e[0]);
+  const a = [], b = []; sorted.forEach((g, i) => (i % 2 ? b : a).push(g));
+  groupsOrder.push(...a, ...b.reverse());
+}
+const NMAX = Math.max(...D.nodeCount);
+let starPos = null, groupPos = null;
+function layoutStars(st) {
+  const S = Math.min(st.w, st.h), cx = st.w / 2, cy = st.h / 2, R = S / 2 - 34;
+  const members = new Map(groupsOrder.map(g => [g, []]));
+  NODES.forEach((n, k) => members.get(nodeGroup[k]).push(k));
+  const sizes = groupsOrder.map(g => members.get(g).length);
+  const ring = R * 0.62, gap = R * 0.05, root2 = sizes.reduce((a, n) => a + 2 * Math.sqrt(n), 0);
+  const s = Math.min(R * 0.075, (TAU * ring - gap * sizes.length) / root2);
+  const total = root2 * s + gap * sizes.length;
+  starPos = new Array(NN); groupPos = [];
+  let acc = -Math.PI / 2;
+  groupsOrder.forEach((g, gi) => {
+    const rc = Math.sqrt(sizes[gi]) * s;
+    const span = (2 * rc + gap) / total * TAU, ang = acc + span / 2; acc += span;
+    const gr = Math.min(R - rc, ring + rc * 0.35);
+    const gx = cx + Math.cos(ang) * gr, gy = cy + Math.sin(ang) * gr;
+    const m = members.get(g).sort((p, q) => D.nodeCount[q] - D.nodeCount[p]);
+    groupPos.push({ g, x: gx, y: gy, ang, n: m.length, lx: cx + Math.cos(ang) * (gr + rc + 10), ly: cy + Math.sin(ang) * (gr + rc + 10) });
+    m.forEach((k, j) => {
+      const rr = m.length > 1 ? s * 0.92 * Math.sqrt(j + 0.5) : 0, aa = j * 2.39996 + ang;
+      starPos[k] = { x: gx + Math.cos(aa) * rr, y: gy + Math.sin(aa) * rr, r: 1.4 + 4.6 * Math.sqrt(D.nodeCount[k] / NMAX), g: gi };
+    });
+  });
+}
+const showName = n => n === '(root)' ? '根目录文件' : n;
+const BEAM = 3 * HOUR;
+function renderStars() {
+  const { ctx, w, h } = ST; if (!w || !starPos) return;
+  ctx.clearRect(0, 0, w, h);
+  const cx = w / 2, cy = h / 2, it = upTo(t);
+  // skeleton
+  ctx.strokeStyle = LINE2; ctx.lineWidth = 1; ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  for (const gp of groupPos) { ctx.moveTo(cx, cy); ctx.lineTo(gp.x, gp.y); }
+  NODES.forEach((_, k) => { const p = starPos[k], gp = groupPos[p.g]; ctx.moveTo(gp.x, gp.y); ctx.lineTo(p.x, p.y); });
+  ctx.stroke(); ctx.globalAlpha = 1;
+  // beams
+  const i0 = before(t - BEAM);
+  ctx.globalCompositeOperation = GLOW_OP;
+  const step = Math.max(1, Math.floor((it - i0) / 260));
+  for (let i = i0; i < it; i += step) {
+    const a = 1 - (t - T[i]) / BEAM, c = COL[lanes[LN[i]].ci];
+    ctx.strokeStyle = c; ctx.globalAlpha = a * a * 0.5; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (const k of ND[i]) { const p = starPos[k]; ctx.moveTo(cx, cy); ctx.lineTo(p.x, p.y); }
+    ctx.stroke();
+    if (a > 0.82) {
+      const pr = (1 - a) / 0.18;
+      ctx.globalAlpha = (1 - pr) * 0.8; ctx.strokeStyle = HI;
+      ctx.beginPath(); for (const k of ND[i]) { const p = starPos[k]; ctx.moveTo(p.x + p.r + 2 + pr * 12, p.y); ctx.arc(p.x, p.y, p.r + 2 + pr * 12, 0, TAU); } ctx.stroke();
+    }
+  }
+  // stars
+  for (let k = 0; k < NN; k++) {
+    const p = starPos[k], cum = lb(hitsA[k], it), f = cum ? Math.log1p(cum) / Math.log1p(hitsA[k].length) : 0;
+    if (f > 0) { const s = p.r * 4 + 10 * f; ctx.globalAlpha = (0.25 + 0.6 * f) * GLOW_K; ctx.drawImage(SPR_ICE, p.x - s / 2, p.y - s / 2, s, s); }
+  }
+  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+  for (let k = 0; k < NN; k++) {
+    const p = starPos[k], cum = lb(hitsA[k], it), f = cum ? Math.log1p(cum) / Math.log1p(hitsA[k].length) : 0;
+    ctx.fillStyle = f ? heat(0.25 + 0.75 * f) : GHOST2;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, TAU); ctx.fill();
+  }
+  // core
+  ctx.globalCompositeOperation = GLOW_OP; ctx.globalAlpha = GLOW_K; ctx.drawImage(SPR_HI, cx - 22, cy - 22, 44, 44); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = HI; ctx.beginPath(); ctx.arc(cx, cy, 4, 0, TAU); ctx.fill();
+  // group labels
+  ctx.font = '10.5px ' + MONO; ctx.textBaseline = 'middle';
+  for (const gp of groupPos) {
+    if (gp.n < 2 && !/^(docs|scripts|\(root\))$/.test(gp.g)) continue;
+    const c = Math.cos(gp.ang), nm = showName(gp.g);
+    ctx.textAlign = c > 0.3 ? 'left' : c < -0.3 ? 'right' : 'center';
+    ctx.lineWidth = 3; ctx.strokeStyle = BG; ctx.strokeText(nm, gp.lx, gp.ly);
+    ctx.fillStyle = FG2; ctx.fillText(nm, gp.lx, gp.ly);
+  }
+  ctx.textAlign = 'start';
+}
+let lastHotKey = '';
+function updateHot() {
+  const it = upTo(t), i0 = before(t - DAY), score = new Map();
+  for (let i = i0; i < it; i++) for (const k of ND[i]) score.set(k, (score.get(k) || 0) + 1);
+  const top = [...score.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4);
+  const key = top.map(e => e[0]).join(',');
+  if (key === lastHotKey) return; lastHotKey = key;
+  $('hot').innerHTML = '<span>近 24 小时最热：</span>' + (top.length ? top.map(([k]) => `<span class="chip">${esc(showName(NODES[k]))}</span>`).join('') : '<span>暂无改动</span>');
+}
+$('stars-cap').textContent = `把改动的文件按前两级目录聚合成 ${NN} 个模块，同一顶层目录聚成一团。每次提交，光束从中心射向被改动的模块；越亮代表累计改动越多。`;
+
+// ---------- ticker ----------
+let lastTickIt = -1, lastTickAt = 0;
+function updateTicker(now) {
+  const it = upTo(t);
+  if (it === lastTickIt) return;
+  if (now - lastTickAt < 90) { dirty = true; return; }
+  const prev = lastTickIt; lastTickIt = it; lastTickAt = now;
+  const rows = [];
+  for (let i = it - 1; i >= Math.max(0, it - 7); i--) {
+    const L = lanes[LN[i]];
+    const nm = L.kind === 'main' ? 'main' : L.anon ? '未命名分支' : L.label;
+    rows.push(`<li class="${dir > 0 && prev >= 0 && i >= prev ? 'new' : ''}"><span class="tm">${fmtMDHM(T[i])}</span><span class="br"><i style="background:var(${CI_VAR[L.ci]})"></i>${esc(nm)}</span><span class="sj">${esc(SUBJ[i])}</span></li>`);
+  }
+  while (rows.length < 7) rows.push('<li><span class="tm">&nbsp;</span><span class="br"></span><span class="sj"></span></li>');
+  $('ticker').innerHTML = rows.join('');
+}
+
+// ---------- scrubber ----------
+const SC = stage('scrub');
+function renderScrub() {
+  const { ctx, w, h } = SC; if (!w) return;
+  ctx.clearRect(0, 0, w, h);
+  const k = w / END, xNow = t * k, base = h - 6;
+  ctx.fillStyle = LINE; ctx.fillRect(0, base, w, 1);
+  for (let d = 0; d < NDAYS; d++) {
+    const x0 = Math.max(0, (DAY0 + d * DAY) * k), x1 = Math.min(w, (DAY0 + (d + 1) * DAY) * k);
+    const bh = Math.max(1, dayCount[d] / MAXDAY * (h - 20));
+    ctx.fillStyle = x1 <= xNow ? COL[0] : GHOST2;
+    ctx.globalAlpha = x1 <= xNow ? 0.85 : 1;
+    ctx.fillRect(x0 + 0.5, base - bh, Math.max(1, x1 - x0 - 1), bh);
+  }
+  ctx.globalAlpha = 1;
+  ctx.font = '10px ' + MONO; ctx.textBaseline = 'top'; ctx.fillStyle = FG3;
+  let lastLx = -Infinity;
+  for (let m = 1000; m < N; m += 1000) {
+    const xm = T[m - 1] * k;
+    ctx.fillRect(Math.round(xm), 0, 1, 6);
+    if (xm - lastLx >= 30 && xm + 26 <= w) { ctx.fillText(`${m / 1000}k`, xm + 3, 0); lastLx = xm; }
+  }
+  ctx.save(); ctx.shadowColor = HI; ctx.shadowBlur = 10; ctx.fillStyle = HI; ctx.fillRect(xNow - 1, 0, 2, h); ctx.restore();
+  ctx.fillStyle = HI; ctx.beginPath(); ctx.arc(Math.min(w - 6, Math.max(6, xNow)), base, 5, 0, TAU); ctx.fill();
+}
+(function scrubInput() {
+  const c = SC.canvas;
+  const setFrom = e => { const r = c.getBoundingClientRect(); t = Math.max(0, Math.min(END, (e.clientX - r.left) / r.width * END)); dirty = true; };
+  c.addEventListener('pointerdown', e => { cancelIntro(); scrubbing = true; setPlaying(false); c.setPointerCapture(e.pointerId); setFrom(e); });
+  c.addEventListener('pointermove', e => {
+    if (scrubbing) setFrom(e);
+    const r = c.getBoundingClientRect(), tt = Math.max(0, Math.min(END, (e.clientX - r.left) / r.width * END));
+    showTip(`<div class="t">${fmtMDHM(tt)}</div><div class="s">已有 ${fmtN(upTo(tt))} 次提交</div>`, e.clientX, r.top - 6, true);
+  });
+  c.addEventListener('pointerup', () => { scrubbing = false; });
+  c.addEventListener('pointerleave', () => hideTip());
+  c.addEventListener('keydown', e => {
+    const step = e.shiftKey ? DAY : HOUR;
+    if (e.key === 'ArrowLeft') { jump(t - step); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { jump(t + step); e.preventDefault(); }
+  });
+})();
+
+// ---------- dock ----------
+let lastDockIt = -1, lastDockMin = -1;
+function updateDock() {
+  const L = lt(t), mm = Math.floor((t + OFF) / 60);
+  if (mm !== lastDockMin) {
+    lastDockMin = mm;
+    $('m-date').textContent = `${L.y}-${p2(L.m)}-${p2(L.d)}`;
+    $('m-time').textContent = `${p2(L.h)}:${p2(L.mi)}`;
+    $('m-tz').textContent = `周${WK[L.w]} · 北京时间`;
+    SC.canvas.setAttribute('aria-valuenow', String(Math.round(t / END * 100)));
+    SC.canvas.setAttribute('aria-valuetext', `${L.m} 月 ${L.d} 日 ${p2(L.h)}:${p2(L.mi)}`);
+  }
+  const it = upTo(t);
+  $('d-par').textContent = activeAt(t);
+  if (it !== lastDockIt) {
+    lastDockIt = it;
+    $('d-commits').textContent = fmtN(it);
+    $('d-pr').textContent = fmtN(prCum[it]);
+  }
+  $('d-24').textContent = fmtN(it - before(t - DAY));
+}
+
+// ---------- tooltip ----------
+const tip = $('tip');
+function showTip(html, x, y, above) {
+  tip.innerHTML = html; tip.hidden = false;
+  const r = tip.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+  let lx = x + 14, ly = above ? y - r.height : y + 14;
+  if (lx + r.width > vw - 8) lx = x - r.width - 14;
+  if (ly + r.height > vh - 8) ly = y - r.height - 14;
+  tip.style.left = Math.max(8, lx) + 'px'; tip.style.top = Math.max(8, ly) + 'px';
+}
+function hideTip() { tip.hidden = true; }
+
+// ---------- controls ----------
+const PLAY = '<path d="M4 2.5v11l9-5.5z" fill="currentColor"/>', PAUSE = '<path d="M4 2.5h3v11H4zM9 2.5h3v11H9z" fill="currentColor"/>';
+function syncButtons() {
+  $('i-play').innerHTML = playing && dir > 0 ? PAUSE : PLAY;
+  $('b-play').setAttribute('aria-label', playing && dir > 0 ? '暂停' : '播放');
+  $('b-rev').setAttribute('aria-pressed', String(playing && dir < 0));
+}
+function setPlaying(p) { playing = p; syncButtons(); }
+let introBlocked = false;
+function cancelIntro() { introBlocked = true; if (intro) { intro = null; $('rewind').hidden = true; } }
+function jump(v) { cancelIntro(); t = Math.max(0, Math.min(END, v)); dirty = true; }
+$('b-play').addEventListener('click', () => {
+  cancelIntro();
+  if (playing && dir > 0) return setPlaying(false);
+  if (t >= END) t = 0;
+  dir = 1; setPlaying(true);
+});
+$('b-rev').addEventListener('click', () => {
+  cancelIntro();
+  if (playing && dir < 0) return setPlaying(false);
+  if (t <= 0) t = END;
+  dir = -1; setPlaying(true);
+});
+$('b-start').addEventListener('click', () => jump(0));
+$('b-end').addEventListener('click', () => { jump(END); setPlaying(false); });
+$('cta').addEventListener('click', () => { cancelIntro(); t = 0; dir = 1; setPlaying(true); dirty = true; RV.canvas.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); });
+const speedBtns = [...document.querySelectorAll('.speeds button')];
+function setSpeed(b) {
+  speed = +b.dataset.speed;
+  speedBtns.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+  $('b-speed').textContent = b.textContent;
+}
+speedBtns.forEach(b => b.addEventListener('click', () => setSpeed(b)));
+$('b-speed').addEventListener('click', () => setSpeed(speedBtns[(speedBtns.findIndex(b => +b.dataset.speed === speed) + 1) % speedBtns.length]));
+function setCam(c) { camera = c; $('cam-follow').setAttribute('aria-pressed', String(c === 'follow')); $('cam-full').setAttribute('aria-pressed', String(c === 'full')); yMax = c === 'full' ? MAXSLOT : yMax; dirty = true; }
+$('cam-follow').addEventListener('click', () => setCam('follow'));
+$('cam-full').addEventListener('click', () => setCam('full'));
+document.addEventListener('keydown', e => {
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea') return;
+  if (e.key === ' ' && tag !== 'button' && tag !== 'summary') { e.preventDefault(); $('b-play').click(); }
+  else if (e.key === 'Home') { jump(0); }
+  else if (e.key === 'End') { jump(END); }
+  else if (e.target === document.body && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { jump(t + (e.key === 'ArrowLeft' ? -1 : 1) * (e.shiftKey ? DAY : HOUR)); }
+});
+const root = document.documentElement, preferLight = matchMedia('(prefers-color-scheme: light)');
+const isDay = () => root.hasAttribute('data-theme') ? root.getAttribute('data-theme') === 'light' : preferLight.matches;
+function syncTheme() {
+  const day = isDay();
+  $('th-day').setAttribute('aria-pressed', String(day)); $('th-night').setAttribute('aria-pressed', String(!day));
+  readTheme();
+}
+function setTheme(v) { root.setAttribute('data-theme', v); try { localStorage.setItem('omne-tm-theme', v); } catch (e) {} }
+$('th-day').addEventListener('click', () => setTheme('light'));
+$('th-night').addEventListener('click', () => setTheme('dark'));
+new MutationObserver(syncTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+preferLight.addEventListener('change', syncTheme);
+syncTheme();
+new ResizeObserver(() => document.documentElement.style.setProperty('--dock-h', $('dock').offsetHeight + 'px')).observe($('dock'));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dirty = true; });
+
+// ---------- live refresh (GitHub Pages build) ----------
+// Polls version.json. A viewer idle at "now" gets new data at once; anyone mid-replay gets a button instead.
+if (D.meta.live) {
+  const KEY = 'omne-tm-restore';
+  try {
+    const r = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+    sessionStorage.removeItem(KEY);
+    if (r) { introBlocked = true; setCam(r.camera); requestAnimationFrame(() => scrollTo(0, r.y)); }
+  } catch (e) {}
+  const reload = () => { try { sessionStorage.setItem(KEY, JSON.stringify({ y: scrollY, camera })); } catch (e) {} location.reload(); };
+  $('fresh').addEventListener('click', reload);
+  setInterval(async () => {
+    let v;
+    try { v = await (await fetch('version.json', { cache: 'no-store' })).json(); } catch (e) { return; }
+    if (v.commits === N && v.last === D.t0 + END) return;
+    if (!playing && !intro && !scrubbing && t === END && document.visibilityState === 'visible') return reload();
+    const n = v.commits - N;
+    $('fresh').textContent = n > 0 ? `有 ${fmtN(n)} 次新提交，点此载入` : '有新数据，点此载入';
+    $('fresh').hidden = false;
+  }, 60000);
+}
+
+// ---------- loop ----------
+let lastTs = 0, lastSlow = 0;
+const ease = p => p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+function frame(ts) {
+  const dt = lastTs ? Math.min(0.1, (ts - lastTs) / 1000) : 0; lastTs = ts;
+  if (intro) {
+    if (!intro.s) intro.s = ts;
+    const p = Math.min(1, (ts - intro.s) / intro.d);
+    t = intro.from + (intro.to - intro.from) * ease(p); dirty = true;
+    if (p >= 1) { intro = null; $('rewind').hidden = true; dir = 1; setPlaying(true); }
+  } else if (playing) {
+    t += dir * speed * dt;
+    if (t >= END) { t = END; setPlaying(false); }
+    else if (t <= 0) { t = 0; setPlaying(false); }
+    dirty = true;
+  }
+  if (dirty) {
+    dirty = false;
+    if (visible.has('river')) renderRiver();
+    if (visible.has('clock')) renderClock();
+    if (visible.has('vel')) renderVel();
+    if (visible.has('stars')) renderStars();
+    renderScrub();
+    updateDock();
+    updateTicker(ts);
+    if (ts - lastSlow > 200 || !playing) { lastSlow = ts; clockStats(); updateHot(); }
+  }
+  requestAnimationFrame(frame);
+}
+updateTicker(0); clockStats(); updateHot(); updateDock();
+requestAnimationFrame(frame);
+if (!reduced) setTimeout(() => { if (!introBlocked && !playing && t === END) { intro = { from: END, to: 0, d: 2600, s: 0 }; $('rewind').hidden = false; } }, 900);
+})();
+</script>
